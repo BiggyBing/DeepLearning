@@ -78,6 +78,23 @@ class Vgg16:
 
         self.data_dict = None
         print(("build model finished: %ds" % (time.time() - start_time)))
+        
+#    def train(self, bgr, epoch):
+#        self.build(bgr)
+#        prediction = self.prob
+#        cross_entropy = tf.reduce_mean(-tf.reduce_sum(ys*tf.log(prediction)))
+#        train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
+#        sess = tf.Session()
+#        sess.run(tf.global_variables_initializer())
+#        for i in range(epoch):
+#            sess.run(train_step, feed_dict={xs: train, ys: train_label})
+#            if i % 50 == 0:
+#                # to see the step improvement
+#            print(sess.run(cross_entropy, feed_dict={xs: train, ys: train_label}))
+#        sess.close()    
+#        
+
+
 
     def avg_pool(self, bottom, name):
         return tf.nn.avg_pool(bottom, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME', name=name)
@@ -114,11 +131,12 @@ class Vgg16:
 
             return fc
 
-    def get_conv_filter(self, name):
+    def get_conv_filter(self, name = None, shape = None):
+        if name == None
         return tf.constant(self.data_dict[name][0], name="filter")
 
-    def get_bias(self, name):
+    def get_bias(self, name = 'None'):
         return tf.constant(self.data_dict[name][1], name="biases")
 
-    def get_fc_weight(self, name):
+    def get_fc_weight(self, name = 'None'):
         return tf.constant(self.data_dict[name][0], name="weights")

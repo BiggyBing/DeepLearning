@@ -24,3 +24,4 @@ with tf.device('/cpu:0'):
 
         prob = sess.run(vgg.prob, feed_dict=feed_dict)
         print(prob)
+4
