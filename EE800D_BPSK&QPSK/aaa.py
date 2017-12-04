@@ -8,31 +8,36 @@ from keras.layers import Conv2D, MaxPooling2D, ZeroPadding2D, GlobalAveragePooli
 import BPSK_QPSK_Generator_New
 import numpy as np
 
+
+
 acc=[]
 loss=[]
 for k in range(2,13):
     B_S = 12 
     B_forUse = k
-    #BPSK,QPSK,EPSK = BPSK_QPSK_Generator_New.BPSK_QPSK_Generator(Bit_size = B_S, Num_shift = 10, Sample_Noise = True, Disturbance = True, Shift = True)
+    BPSK,QPSK,EPSK = BPSK_QPSK_Generator_New.BPSK_QPSK_Generator(Bit_size = B_S, Num_shift = 10, Sample_Noise = True, Disturbance = True, Shift = True)
     
     
     
     Data = []
-    
+    reshapeType = 'Random'
     for i in range(BPSK.shape[0]):
-        temp = data_reshape(BPSK[i,0:B_forUse*4],B_forUse)
+        temp = data_reshape(BPSK[i,0:B_forUse*4],B_forUse,reshapeType = reshapeType)
         Data.append(temp)
         #Data = np.dstack((Data,temp))    
     
     for i in range(QPSK.shape[0]):
-        temp = data_reshape(QPSK[i,0:B_forUse*4],B_forUse)
+        temp = data_reshape(QPSK[i,0:B_forUse*4],B_forUse,reshapeType = reshapeType)
         Data.append(temp)
         
     for i in range(EPSK.shape[0]):
-        temp = data_reshape(EPSK[i,0:B_forUse*4],B_forUse)
+        temp = data_reshape(EPSK[i,0:B_forUse*4],B_forUse,reshapeType = reshapeType)
         Data.append(temp)
-    
-    data = np.array(Data).reshape((len(Data),2,B_forUse*2,1))   
+        
+    if reshapeType == 'Random':
+        data = np.array(Data).reshape((len(Data),4,-1,1))  
+    else:
+        data = np.array(Data).reshape((len(Data),2,-1,1))
     
     BPSK_label = BPSK[:,B_S*4:]
     QPSK_label = QPSK[:,B_S*4:]
@@ -42,7 +47,7 @@ for k in range(2,13):
     
     model = Sequential()
         
-    model.add(Conv2D(32, (2,2), padding='same', activation='relu', input_shape = (2,B_forUse*2,1)))
+    model.add(Conv2D(32, (2,2), padding='same', activation='relu', input_shape = data.shape[1:]))
     model.add(Conv2D(32, (2,2), padding='same', activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 1)))
     
